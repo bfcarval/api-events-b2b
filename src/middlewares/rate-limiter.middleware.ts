@@ -3,8 +3,8 @@ import { RedisStore } from 'rate-limit-redis';
 import { redisConnection } from '../config/redis';
 
 export const rateLimiter = rateLimit({
-    windowMs: 60 * 1000, // 1 minuto
-    max: 100, // limite de 100 requisições por IP
+    windowMs: 60 * 1000,
+    max: 100,
     standardHeaders: true,
     legacyHeaders: false,
     store: new RedisStore({

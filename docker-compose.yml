@@ -31,7 +31,7 @@ services:
 
   api:
     build: .
-    container_name: b2b_api
+    container_name: api_events_b2b
     ports:
       - "3000:3000"
     environment:

@@ -5,7 +5,6 @@ import swaggerUi from 'swagger-ui-express';
 
 dotenv.config();
 
-// Inicializar workers de background
 import './queues/processors/event.processor';
 
 import eventRoutes from './routes/event.routes';
@@ -19,6 +18,13 @@ app.use(express.json());
 const swaggerDocument = {
     openapi: "3.0.0",
     info: { title: "API Events B2B Orchestrator", version: "1.0.0" },
+    servers: [
+        {
+            url: "http://localhost:3000/api",
+            description: "Servidor Local de Desenvolvimento"
+        }
+    ],
+
     paths: {
         "/events": {
             post: {

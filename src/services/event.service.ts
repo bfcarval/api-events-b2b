@@ -4,7 +4,7 @@ import { logger } from '../utils/logger';
 
 export class EventService {
     async receiveEvent(data: { id: string; type: string; payload: any; origin: string }) {
-        // 1. Validar Idempotência (Verificar se o evento já existe)
+
         const existingEvent = await prisma.event.findUnique({ where: { id: data.id } });
 
         if (existingEvent) {
@@ -12,7 +12,6 @@ export class EventService {
             return { status: 'duplicado', event: existingEvent };
         }
 
-        // 2. Salvar evento inicial no banco de dados
         const event = await prisma.event.create({
             data: {
                 id: data.id,
@@ -23,9 +22,8 @@ export class EventService {
             }
         });
 
-        // 3. Adicionar na fila de processamento assíncrono (BullMQ)
         await eventQueue.add('process-event', { eventId: event.id }, {
-            attempts: 3, // Sistema de Retry de 3 tentativas por padrão
+            attempts: 3,
             backoff: { type: 'exponential', delay: 2000 }
         });
 
@@ -41,7 +39,7 @@ export class EventService {
             by: ['status'],
             _count: { id: true }
         });
-        return stats.reduce((acc: any, curr) => {
+        return stats.reduce((acc: any, curr: any) => {
             acc[curr.status] = curr._count.id;
             return acc;
         }, {});

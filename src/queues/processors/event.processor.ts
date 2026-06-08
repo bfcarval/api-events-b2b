@@ -13,10 +13,8 @@ const worker = new Worker('event-processor-queue', async (job: Job) => {
 
     logger.info(`Processando evento: ${eventId} - Tentativa: ${event.attempts}`);
 
-    // CORREÇÃO TS18047 e TS2322: Garante que o payload é um objeto válido antes de ler ou gravar
     let currentPayload = event.payload && typeof event.payload === 'object' ? event.payload : {};
 
-    // ENRIQUECIMENTO DE DADOS (Simulação de Regra de Negócio)
     if (event.type === 'VENDA' && !currentPayload.hasOwnProperty('taxProcessed')) {
         currentPayload = {
             ...currentPayload,
@@ -25,12 +23,10 @@ const worker = new Worker('event-processor-queue', async (job: Job) => {
         };
     }
 
-    // SIMULAÇÃO DE ENVIO DOWNSTREAM / FILA SECUNDÁRIA (Aleatoriedade de erro para testar DLQ)
     if (Math.random() > 0.75) {
         throw new Error('Falha simulada na comunicação com o sistema downstream.');
     }
 
-    // CORREÇÃO TS2322: Passa o payload convertido de forma aceitável para o Prisma
     await prisma.event.update({
         where: { id: eventId },
         data: {
@@ -41,12 +37,11 @@ const worker = new Worker('event-processor-queue', async (job: Job) => {
 
     logger.info(`Evento ${eventId} distribuído com sucesso.`);
 }, {
-    // CORREÇÃO DO CONFLITO REDIS: Força o BullMQ a aceitar a conexão externa usando 'as any'
+
     connection: redisConnection as any,
     concurrency: 10
 });
 
-// Listener de falha geral do BullMQ para atualizar status de erro ou mandar para DLQ
 worker.on('failed', async (job: Job | undefined, err: Error) => {
     if (!job) return;
     const { eventId } = job.data;
