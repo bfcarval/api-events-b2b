@@ -1,30 +1,35 @@
 {
-  "name": "events-b2b",
+  "name": "api-events-b2b",
   "version": "1.0.0",
-  "description": "Microserviço que atua como orquestrador de eventos em plataforma B2B. Recebe eventos de parceiros comerciais, valida, processa e distribui para microserviços conjuntos.",
-  "main": "index.js",
+  "description": "Orquestrador de eventos em plataforma B2B",
+  "main": "dist/app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dist": "tsup src",
-    "start:dev": "tsx src/server.ts",
-    "start:watch": "tsx watch src/server.ts",
-    "start:dist": "npm run dist && node dist/src/index.js"
+    "build": "tsc",
+    "start": "node dist/app.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/app.ts",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate deploy"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/bfcarval/events-b2b.git"
+  "dependencies": {
+    "@prisma/client": "^5.10.0",
+    "bullmq": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.3",
+    "express-rate-limit": "^7.2.0",
+    "ioredis": "^5.3.2",
+    "rate-limit-redis": "^4.2.0",
+    "swagger-ui-express": "^5.0.0",
+    "winston": "^3.12.0",
+    "zod": "^3.22.4"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/bfcarval/events-b2b/issues"
-  },
-  "homepage": "https://github.com/bfcarval/events-b2b#readme",
   "devDependencies": {
-    "@types/node": "^25.9.1",
-    "tsx": "^4.22.4",
-    "typescript": "^6.0.3"
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.11.24",
+    "@types/swagger-ui-express": "^4.1.6",
+    "prisma": "^5.10.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.3.3"
   }
 }

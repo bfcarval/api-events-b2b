@@ -1,0 +1,31 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum EventStatus {
+  RECEBIDO
+  PROCESSANDO
+  SUCESSO
+  FALHA
+  DEAD_LETTER
+}
+
+model Event {
+  id         String      @id
+  type       String
+  payload    Json
+  origin     String
+  status     EventStatus @default(RECEBIDO)
+  attempts   Int         @default(0)
+  errorMessage String?
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  @@index([status])
+  @@index([origin])
+}
