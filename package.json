@@ -1,0 +1,30 @@
+{
+  "name": "events-b2b",
+  "version": "1.0.0",
+  "description": "Microserviço que atua como orquestrador de eventos em plataforma B2B. Recebe eventos de parceiros comerciais, valida, processa e distribui para microserviços conjuntos.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dist": "tsup src",
+    "start:dev": "tsx src/server.ts",
+    "start:watch": "tsx watch src/server.ts",
+    "start:dist": "npm run dist && node dist/src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bfcarval/events-b2b.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/bfcarval/events-b2b/issues"
+  },
+  "homepage": "https://github.com/bfcarval/events-b2b#readme",
+  "devDependencies": {
+    "@types/node": "^25.9.1",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3"
+  }
+}
