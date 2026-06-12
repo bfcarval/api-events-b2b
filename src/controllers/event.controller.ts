@@ -13,11 +13,25 @@ export const eventSchema = z.object({
 
 export class EventController {
     async handle(req: Request, res: Response) {
-        const result = await eventService.receiveEvent(req.body);
-        if (result.status === 'duplicado') {
-            return res.status(409).json({ message: 'Evento já processado anteriormente.', data: result.event });
+        try {
+            const validatedBody = eventSchema.parse(req.body);
+            const result = await eventService.receiveEvent(validatedBody);
+
+            if (result.status === 'duplicado') {
+                return res.status(409).json({ message: 'Evento já processado anteriormente.', data: result.event });
+            }
+            return res.status(202).json(result.event);
+
+        } catch (error: any) {
+            if (error instanceof z.ZodError) {
+                return res.status(400).json({
+                    message: 'Dados de evento inválidos.',
+                    errors: error.errors
+                });
+            }
+
+            return res.status(500).json({ message: 'Erro interno no servidor.' });
         }
-        return res.status(202).json(result.event);
     }
 
     async getStatus(req: Request, res: Response) {
